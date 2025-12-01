@@ -1,0 +1,198 @@
+const config = require('../config');
+const { cmd, commands } = require('../command');
+const os = require("os");
+const { runtime } = require('../lib/functions');
+const imageUrl = 'https://files.catbox.moe/5hd2zv.jpg';
+
+cmd({
+    pattern: "menu",
+    react: "🌸",
+    alias: ["panel", "commands"],
+    desc: "Get Bot Menu",
+    category: "main",
+    use: '.menu',
+    filename: __filename
+},
+async (conn, mek, m, { from, quoted, pushname, reply }) => {
+    try {
+        const selectionMessage = `
+╭━━━━∙⋆⋅⋆∙━ ─┉─ • ─┉─⊷
+    *Hi...🤟*  *${pushname}*
+      
+    *⏳ Uptime*: ${runtime(process.uptime())}
+  
+    *👨‍💻 Owner:  𝘾𝙮𝙗𝙚𝙧𝙓 𝘿𝙚𝙫𝙨 member 𝗖𝗬𝗕𝗘𝗥 𝗔𝗡𝗨𝗪𝗛*
+╰━━━━∙⋆⋅⋆∙━ ─┉─ • ─┉─⊷
+
+╭───────────────✦
+│ ① ⬇️ *Download Menu*
+│ ② 🔍 *Search Menu*
+│ ③ 🤖 *AI Menu*   
+│ ④ 🛠️ *Owner Menu*
+│ ⑤ 👥 *Group Menu* 
+│ ⑥ 🙃 *info Menu*
+│ ⑦ 🎛️ *Converter Menu*
+│ ⑧ 🎲 *Random Menu*
+│ ⑨ 🖼️ *Wallpapers Menu*
+│ ⑩ 🌐 *Other Menu*
+╰───────────────✦
+
+> 𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 𝗖𝗬𝗕𝗘𝗥 𝗔𝗡𝗨𝗪𝗛
+`;
+
+        let sentMsg;
+        try {
+            sentMsg = await conn.sendMessage(from, {
+                image: { url: imageUrl },
+            caption: selectionMessage,
+            contextInfo: { forwardingScore: 999, isForwarded: true },
+        }, { quoted: mek });
+        } catch (err) {
+            reply("*⚠️ Menu image failed to load. Sending text-only menu.*");
+            sentMsg = await conn.sendMessage(from, { text: selectionMessage }, { quoted: mek });
+        }
+
+        // පරිශීලක ප්‍රතිචාර ලබා ගැනීම
+        conn.ev.on('messages.upsert', async (msgUpdate) => {
+            const msg = msgUpdate.messages[0];
+            if (!msg.message || !msg.message.extendedTextMessage) return;
+
+            const userResponse = msg.message.extendedTextMessage.text.trim();
+            if (msg.message.extendedTextMessage.contextInfo &&
+                msg.message.extendedTextMessage.contextInfo.stanzaId === sentMsg.key.id) {
+
+                let responseText;
+
+                switch (userResponse) {
+                    case '1': // DOWNLOAD MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *📥 DOWNLOADER-MENU 📥* *❒⁠⁠⁠⁠* 
+*┋* *song* 
+*┋* *video* 
+*┋* *fb* 
+*┋* *insta* 
+*┋* *tiktok* 
+*┋* *ytpost* 
+*┋* *twitter* 
+*┋* *mediafire* 
+*┋* *apk* 
+*┋* *gdrive* 
+*┋* *pindl* 
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '2': // SEARCH MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *🔎 SEARCH-MENU 🔍* *❒⁠⁠⁠⁠* 
+*┋* *tiktokstalk*
+*┋* *tiktoksearch*
+*┋* *movie*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '3': // AI MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *🧠 AI-MENU 🧠* *❒⁠⁠⁠⁠* 
+*┋* *ai* 
+*┋* *ais* 
+*┋* *deepseek*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '4': // OWNER MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *👨‍💻 OWNER-MENU 👨‍💻* *❒⁠⁠⁠⁠* 
+*┋* *update*
+*┋* *restart*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '5': // GROUP MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *👥 GROUP-MENU 👥* *❒⁠⁠⁠⁠* 
+*┋* *kickall*
+*┋* *jid*
+*┋* *tagall*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '6': // INFO MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *💾 INFO-MENU 💾* *❒⁠⁠⁠⁠* 
+*┋* *alive*
+*┋* *menu*
+*┋* *ping*
+*┋* *owner*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '7': // CONVERTER MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *🔄 CONVERTER-MENU 🔄* *❒⁠⁠⁠⁠* 
+*┋* *tts2*
+*┋* *tourl*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '8': // WALLPAPERS MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *⛱️ RANDOM-MENU ⛱️* *❒⁠⁠⁠⁠* 
+*┋* *hack*
+*┋* *weather*
+*┋* *news*
+*┋* *hirucheck* 
+*┋* *derananews*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '9': // WALLPAPER MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *🏜️ WALLPAPERS-MENU 🏜️* *❒⁠⁠⁠⁠* 
+*┋* *animegirl1*
+*┋* *animegirl2*
+*┋* *animegirl3*
+*┋* *animegirl4*
+*┋* *animegirl5*
+*┋* *logo*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    case '10': // OTHER MENU
+                        responseText = `
+*╭────❒⁠⁠⁠⁠* *🌐 OTHER-MENU 🌐* *❒⁠⁠⁠⁠* 
+*┋* *pair*
+*┋* *happy*
+*┋* *heart*
+*┋* *angry*
+*┋* *sad*
+*┋* *shy*
+*┋* *moon*
+*┋* *confused*
+*┋* *hot*
+*╰───────────────────❒*
+
+`;
+                        break;
+                    default:
+                        responseText = "*❌ Invalid option. Please enter a valid number (1-10)*";
+                }
+
+                // තෝරාගත් මෙනුව WhatsApp chat එකට යවයි.
+                await conn.sendMessage(from, { text: responseText }, { quoted: mek });
+            }
+        });
+
+    } catch (e) {
+        console.error(e);
+        reply(`*⚠ An error occurred: ${e.message}*`);
+    }
+});
